@@ -48,6 +48,70 @@ Le systeme de reservation utilise Google Apps Script comme backend gratuit pour 
 
 Modifiez la variable `SLOTS` dans `js/booking.js` et dans `apps-script/Code.gs` pour ajuster les horaires disponibles.
 
+## Configuration des emails de confirmation (EmailJS)
+
+EmailJS permet d'envoyer des emails directement depuis le frontend (gratuit jusqu'a 200 emails/mois).
+
+### Etapes :
+
+1. **Creer un compte** sur [emailjs.com](https://www.emailjs.com) (gratuit)
+
+2. **Ajouter un service email :**
+   - Email Services > Add New Service > Gmail
+   - Connecter le compte enricogenco700m@gmail.com
+
+3. **Creer le template pour le patient** (Email Templates > Create New) :
+   - Nom : "Confirmation Patient"
+   - To Email : `{{patient_email}}`
+   - Subject : `Confirmation de votre rendez-vous - Enrico Genco`
+   - Content :
+   ```
+   Bonjour {{patient_name}},
+
+   Votre rendez-vous a bien ete confirme :
+
+   Date : {{appointment_date}}
+   Heure : {{appointment_time}}
+   Motif : {{motif}}
+
+   Tarif : 65 euros
+
+   Merci d'apporter vos examens complementaires (radiographies, IRM, etc.).
+   En cas d'annulation, merci de prevenir au moins 24h a l'avance.
+
+   Cordialement,
+   Enrico Genco - Osteopathe
+   +32 484 43 86 14
+   ```
+   - Notez le **Template ID**
+
+4. **Creer le template pour Enrico** (notification) :
+   - Nom : "Notification Osteo"
+   - To Email : `enricogenco700m@gmail.com`
+   - Subject : `Nouveau RDV : {{patient_name}} - {{appointment_date}} a {{appointment_time}}`
+   - Content :
+   ```
+   Nouveau rendez-vous en ligne :
+
+   Patient : {{patient_name}}
+   Email : {{patient_email}}
+   Telephone : {{patient_phone}}
+   Date : {{appointment_date}}
+   Heure : {{appointment_time}}
+   Motif : {{motif}}
+   Message : {{message}}
+   ```
+   - Notez le **Template ID**
+
+5. **Recuperer les identifiants :**
+   - Service ID : Email Services > votre service > Service ID
+   - Public Key : Account > API Keys > Public Key
+
+6. **Configurer dans le code :**
+   - Ouvrez `js/booking.js`
+   - Remplissez les 4 constantes EmailJS en haut du fichier
+   - Committez et poussez
+
 ## Structure du projet
 
 ```

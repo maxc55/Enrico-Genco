@@ -2,6 +2,16 @@
 // Replace this URL with your deployed Google Apps Script Web App URL
 const APPS_SCRIPT_URL = '';
 
+// ===== EMAILJS CONFIGURATION =====
+// 1. Creer un compte gratuit sur https://www.emailjs.com
+// 2. Ajouter un service email (Gmail de enricogenco700m@gmail.com)
+// 3. Creer deux templates (voir README pour les variables)
+// 4. Remplir les valeurs ci-dessous
+const EMAILJS_PUBLIC_KEY = '';      // Account > API Keys > Public Key
+const EMAILJS_SERVICE_ID = '';      // Email Services > Service ID
+const EMAILJS_TEMPLATE_PATIENT = '';  // Template ID pour le patient
+const EMAILJS_TEMPLATE_OSTEO = '';    // Template ID pour Enrico
+
 // ===== NAVBAR =====
 const navbar = document.getElementById('navbar');
 const navToggle = document.getElementById('navToggle');
@@ -209,6 +219,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   };
 
   let success = false;
+  const dateFormatted = formatDateFR(selectedDate);
 
   if (APPS_SCRIPT_URL) {
     try {
@@ -233,9 +244,33 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
       return;
     }
   } else {
-    // Demo mode: simulate success
-    await new Promise(r => setTimeout(r, 1000));
     success = true;
+  }
+
+  // Send confirmation emails via EmailJS
+  if (success && EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID) {
+    const emailParams = {
+      patient_name: formData.name,
+      patient_email: formData.email,
+      patient_phone: formData.phone,
+      appointment_date: dateFormatted,
+      appointment_time: formData.time,
+      motif: formData.motif || 'Non precise',
+      message: formData.message || '-'
+    };
+
+    try {
+      // Email de confirmation au patient
+      if (EMAILJS_TEMPLATE_PATIENT) {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_PATIENT, emailParams, EMAILJS_PUBLIC_KEY);
+      }
+      // Email de notification a Enrico
+      if (EMAILJS_TEMPLATE_OSTEO) {
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_OSTEO, emailParams, EMAILJS_PUBLIC_KEY);
+      }
+    } catch (emailErr) {
+      console.warn('Emails could not be sent:', emailErr);
+    }
   }
 
   if (success) {
