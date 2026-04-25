@@ -3,9 +3,9 @@
 const APPS_SCRIPT_URL = '';
 
 // ===== EMAILJS CONFIGURATION =====
-// 1. Creer un compte gratuit sur https://www.emailjs.com
+// 1. Créer un compte gratuit sur https://www.emailjs.com
 // 2. Ajouter un service email (Gmail de enricogenco700m@gmail.com)
-// 3. Creer deux templates (voir README pour les variables)
+// 3. Créer deux templates (voir README pour les variables)
 // 4. Remplir les valeurs ci-dessous
 const EMAILJS_PUBLIC_KEY = '';      // Account > API Keys > Public Key
 const EMAILJS_SERVICE_ID = '';      // Email Services > Service ID
@@ -54,8 +54,8 @@ const step2 = document.getElementById('bookingStep2');
 const step3 = document.getElementById('bookingStep3');
 
 const MONTH_NAMES = [
-  'Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin',
-  'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre'
+  'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+  'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
 ];
 
 function renderCalendar() {
@@ -127,7 +127,7 @@ async function selectDate(date) {
   renderCalendar();
 
   slotsTitle.textContent = formatDateFR(date);
-  slotsList.innerHTML = '<p class="slots-empty">Chargement des creneaux...</p>';
+  slotsList.innerHTML = '<p class="slots-empty">Chargement des créneaux...</p>';
 
   const dateStr = dateToStr(date);
   let busySlots = [];
@@ -180,7 +180,7 @@ function renderSlots(dateStr, busySlots) {
   });
 
   if (!anyAvailable) {
-    slotsList.innerHTML = '<p class="slots-empty">Aucun creneau disponible ce jour.</p>';
+    slotsList.innerHTML = '<p class="slots-empty">Aucun créneau disponible ce jour.</p>';
   }
 }
 
@@ -205,7 +205,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
   const submitBtn = document.getElementById('bookSubmit');
   const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
-  submitBtn.innerHTML = '<span class="spinner"></span> Reservation en cours...';
+  submitBtn.innerHTML = '<span class="spinner"></span> Réservation en cours...';
 
   const formData = {
     action: 'book',
@@ -231,14 +231,14 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
       const data = await res.json();
       success = data.success;
       if (!success) {
-        alert(data.message || 'Ce creneau vient d\'etre reserve. Veuillez en choisir un autre.');
+        alert(data.message || 'Ce créneau vient d\'être réservé. Veuillez en choisir un autre.');
         submitBtn.disabled = false;
         submitBtn.textContent = originalText;
         return;
       }
     } catch (err) {
       console.error('Booking error:', err);
-      alert('Erreur de connexion. Veuillez reessayer ou nous contacter par telephone.');
+      alert('Erreur de connexion. Veuillez réessayer ou nous contacter par téléphone.');
       submitBtn.disabled = false;
       submitBtn.textContent = originalText;
       return;
@@ -255,7 +255,7 @@ document.getElementById('bookingForm').addEventListener('submit', async (e) => {
       patient_phone: formData.phone,
       appointment_date: dateFormatted,
       appointment_time: formData.time,
-      motif: formData.motif || 'Non precise',
+      motif: formData.motif || 'Non précisé',
       message: formData.message || '-'
     };
 
@@ -291,6 +291,7 @@ function goToStep3(data) {
     ${data.motif ? `<p><strong>Motif :</strong> ${data.motif}</p>` : ''}
   `;
 
+
   // Reset form
   document.getElementById('bookingForm').reset();
 }
@@ -301,8 +302,8 @@ document.getElementById('newBooking').addEventListener('click', () => {
   step1.classList.remove('hidden');
   step2.classList.add('hidden');
   step3.classList.add('hidden');
-  slotsTitle.textContent = 'Selectionnez une date';
-  slotsList.innerHTML = '<p class="slots-empty">Choisissez un jour dans le calendrier pour voir les creneaux disponibles.</p>';
+  slotsTitle.textContent = 'Sélectionnez une date';
+  slotsList.innerHTML = '<p class="slots-empty">Choisissez un jour dans le calendrier pour voir les créneaux disponibles.</p>';
   renderCalendar();
 });
 
